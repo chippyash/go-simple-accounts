@@ -1,0 +1,13 @@
+DROP PROCEDURE IF EXISTS sa_sp_add_ledger;
+DROP PROCEDURE IF EXISTS sa_sp_del_ledger;
+DROP FUNCTION IF EXISTS sa_fu_add_chart;
+DROP FUNCTION IF EXISTS sa_fu_add_txn;
+DROP PROCEDURE IF EXISTS sa_sp_get_tree;
+DROP TABLE IF EXISTS sa_coa_ledger;
+DROP TABLE IF EXISTS sa_journal_entry;
+DROP TABLE IF EXISTS sa_journal;
+DROP TABLE IF EXISTS sa_ac_type;
+DROP TABLE IF EXISTS sa_coa;
+DROP TABLE IF EXISTS org_coa;
+DROP TABLE IF EXISTS org_cntrl;
+DROP TABLE IF EXISTS schema_migrations;
