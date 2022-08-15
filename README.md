@@ -80,6 +80,7 @@ if err != nil {
 ##### Get an account
 ```go
 account := chart.GetAccount(sa.MustNewNominal("1000"))
+account = chart.GetAccountByName("Liability")
 ```
 
 ##### Get account parent

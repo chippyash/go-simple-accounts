@@ -52,6 +52,27 @@ func (c *Chart) GetAccount(nominal Nominal) *Account {
 	return res.GetValue().(*Account)
 }
 
+func (c *Chart) findAccountName(name string) tree.NodeIFace {
+	filterFunc := func(n tree.NodeIFace) bool {
+		return n.GetValue().(*Account).Name() == name
+	}
+	filter := tree.NewFilterVisitor(filterFunc)
+	res := c.tree.Accept(filter).([]tree.NodeIFace)
+	if len(res) == 0 {
+		return nil
+	}
+	return res[0]
+}
+
+//GetAccountByName returns first account matching nominal. Can return nil if not found
+func (c *Chart) GetAccountByName(name string) *Account {
+	res := c.findAccountName(name)
+	if res == nil {
+		return nil
+	}
+	return res.GetValue().(*Account)
+}
+
 //HasAccount tests if chart contains an account matching nominal code
 func (c *Chart) HasAccount(nominal Nominal) bool {
 	return c.GetAccount(nominal) != nil

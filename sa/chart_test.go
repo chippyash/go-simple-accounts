@@ -57,6 +57,12 @@ func TestChart_SetRootNode(t *testing.T) {
 	assert.Equal(t, 0, len(tre.GetChildren()))
 }
 
+func TestChart_GetAccountByName(t *testing.T) {
+	setupChartTest()
+	ac := sut.GetAccountByName("Liability")
+	assert.Equal(t, "2000", ac.Nominal().String())
+}
+
 func TestChart_Name(t *testing.T) {
 	setupChartTest()
 	assert.Equal(t, "Test", sut.Name())
