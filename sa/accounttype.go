@@ -8,9 +8,7 @@ package sa
  * @license BSD-3-Clause See LICENSE.md
  */
 
-import (
-	"math"
-)
+import "math"
 
 type AccountType uint16
 
@@ -169,6 +167,10 @@ func (a *AccountType) Balance(drVal, crVal uint64) (uint64, error) {
 	if *a == dummy {
 		return 0, ErrDummyAccount
 	}
+	if *a == real {
+		//real balance - should always be zero as it is the root account
+		return uint64(math.Abs(float64(drVal) - float64(crVal))), nil
+	}
 	if _, ok := titles[*a]; !ok {
 		return 0, ErrBalanceType
 	}
@@ -179,10 +181,6 @@ func (a *AccountType) Balance(drVal, crVal uint64) (uint64, error) {
 	if *a&cr == cr {
 		//credit account type
 		return crVal - drVal, nil
-	}
-	if *a&real == real {
-		//real balance - should always be zero as it is the root account
-		return uint64(math.Abs(float64(drVal) - float64(crVal))), nil
 	}
 	return 0, ErrBalanceType
 }

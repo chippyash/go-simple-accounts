@@ -131,6 +131,20 @@ func TestYouCanGetBalancesForValidAccountTypes(t *testing.T) {
 	}
 }
 
+func TestYouCanGetBalancesForRealAccountTypes(t *testing.T) {
+	at := sa.NewAcType().Real()
+	realTypes := [][]uint64{
+		{2, 1, 1},
+		{1, 2, 1},
+		{2, 2, 0},
+	}
+	for _, vals := range realTypes {
+		result, err := at.Balance(vals[0], vals[1])
+		assert.NoError(t, err)
+		assert.Equal(t, vals[2], result)
+	}
+}
+
 func TestBalancesForInvalidAccountTypeWillReturnError(t *testing.T) {
 	//dummy account type
 	sut := sa.NewAcType()
