@@ -35,6 +35,7 @@ type ledger struct {
 	Tpe     string
 	AcDr    int64
 	AcCr    int64
+	ChartId uint64
 }
 type ledgerLines []ledger
 
@@ -53,21 +54,22 @@ func (a *Accountant) CreateChart(chartName, crcy string, def *ChartDefinition) (
 	if err != nil {
 		return 0, err
 	}
-	//create chart tree
-	root := dom.Root.Query("/account")[0]
-	treeRoot := tree.NewNode(nil, nil)
-	err = buildTreeFromXml(treeRoot, root)
-	if err != nil {
-		return 0, err
-	}
 
-	chart := NewChart(0, chartName, crcy, treeRoot)
+	chart := NewChart(0, chartName, crcy, nil)
 	chartId, err := a.storeChart(chart)
 	if err != nil {
 		return 0, err
 	}
 
-	errV := treeRoot.Accept(NewNodeSaver(a.db, chartId))
+	//create chart tree
+	root := dom.Root.Query("/account")[0]
+	treeRoot := tree.NewNode(nil, nil)
+	err = buildTreeFromXml(treeRoot, root, chartId)
+	if err != nil {
+		return 0, err
+	}
+
+	errV := treeRoot.Accept(NewNodeSaver(a.db))
 	if errV != nil {
 		a.chartId = chartId
 		return chartId, errV.(error)
@@ -77,7 +79,7 @@ func (a *Accountant) CreateChart(chartName, crcy string, def *ChartDefinition) (
 	return chartId, nil
 }
 
-func buildTreeFromXml(tre tree.NodeIFace, node *xmldom.Node) error {
+func buildTreeFromXml(tre tree.NodeIFace, node *xmldom.Node, chartId uint64) error {
 	//set value of current node
 	nom, err := NewNominal(node.GetAttributeValue("nominal"))
 	if err != nil {
@@ -93,6 +95,7 @@ func buildTreeFromXml(tre tree.NodeIFace, node *xmldom.Node) error {
 		node.GetAttributeValue("name"),
 		0,
 		0,
+		chartId,
 	)
 	tre.SetValue(ac)
 
@@ -100,7 +103,7 @@ func buildTreeFromXml(tre tree.NodeIFace, node *xmldom.Node) error {
 	for _, child := range node.GetChildren("account") {
 		childTree := tree.NewNode(nil, nil)
 		tre.AddChild(childTree)
-		err := buildTreeFromXml(childTree, child)
+		err := buildTreeFromXml(childTree, child, chartId)
 		if err != nil {
 			return err
 		}
@@ -145,7 +148,7 @@ func (a *Accountant) FetchChart() (*Chart, error) {
 	defer res.Close()
 	for res.Next() {
 		l := ledger{}
-		err = res.Scan(&l.PrntId, &l.Id, &l.Nominal, &l.Name, &l.Tpe, &l.AcDr, &l.AcCr)
+		err = res.Scan(&l.PrntId, &l.Id, &l.Nominal, &l.Name, &l.Tpe, &l.AcDr, &l.AcCr, &l.ChartId)
 		if err != nil {
 			return nil, err
 		}
@@ -184,6 +187,7 @@ func (a *Accountant) FetchChart() (*Chart, error) {
 			rootLedger.Name,
 			rootLedger.AcDr,
 			rootLedger.AcCr,
+			rootLedger.ChartId,
 		),
 		nil,
 	)
@@ -216,6 +220,7 @@ func buildTreeFromDb(node tree.NodeIFace, ledgers ledgerLines, prntId uint64) (t
 				childAccount.Name,
 				childAccount.AcDr,
 				childAccount.AcCr,
+				node.GetValue().(*Account).ChartId(),
 			),
 			nil,
 		)

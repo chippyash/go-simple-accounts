@@ -112,7 +112,7 @@ func TestFetchingTitlesForInvalidAccountTypeWillReturnError(t *testing.T) {
 
 func TestYouCanGetBalancesForValidAccountTypes(t *testing.T) {
 	at := sa.NewAcType()
-	validTypes := map[*sa.AccountType][]uint64{
+	validTypes := map[*sa.AccountType][]int64{
 		at.Dr():        {2, 1, 1},
 		at.Cr():        {1, 2, 1},
 		at.Asset():     {2, 1, 1},
@@ -133,7 +133,7 @@ func TestYouCanGetBalancesForValidAccountTypes(t *testing.T) {
 
 func TestYouCanGetBalancesForRealAccountTypes(t *testing.T) {
 	at := sa.NewAcType().Real()
-	realTypes := [][]uint64{
+	realTypes := [][]int64{
 		{2, 1, 1},
 		{1, 2, 1},
 		{2, 2, 0},

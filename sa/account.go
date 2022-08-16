@@ -15,16 +15,18 @@ type Account struct {
 	name    string
 	acDr    int64
 	acCr    int64
+	chartId uint64
 }
 
 //NewAccount Account constructor
-func NewAccount(nominal Nominal, tpe *AccountType, name string, acDr, acCr int64) *Account {
+func NewAccount(nominal Nominal, tpe *AccountType, name string, acDr, acCr int64, chartId uint64) *Account {
 	return &Account{
 		nominal: nominal,
 		tpe:     tpe,
 		name:    name,
 		acDr:    acDr,
 		acCr:    acCr,
+		chartId: chartId,
 	}
 }
 
@@ -56,4 +58,8 @@ func (a *Account) Name() string {
 //Type retrieve account type
 func (a *Account) Type() *AccountType {
 	return a.tpe
+}
+
+func (a *Account) ChartId() uint64 {
+	return a.chartId
 }

@@ -10,4 +10,4 @@ DROP TABLE IF EXISTS sa_ac_type;
 DROP TABLE IF EXISTS sa_coa;
 DROP TABLE IF EXISTS org_coa;
 DROP TABLE IF EXISTS org_cntrl;
-DROP TABLE IF EXISTS schema_migrations;
+

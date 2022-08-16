@@ -22,10 +22,9 @@ type NodeSaver struct {
 }
 
 //NewNodeSaver constructor
-func NewNodeSaver(db *sql.DB, chartId uint64) *NodeSaver {
+func NewNodeSaver(db *sql.DB) *NodeSaver {
 	return &NodeSaver{
 		db: db,
-		id: chartId,
 	}
 }
 
@@ -43,7 +42,7 @@ func (v *NodeSaver) Visit(n tree.NodeIFace) interface{} {
 		prntNominal = n.GetParent().GetValue().(*Account).Nominal().String()
 	}
 
-	_, err := v.db.Exec("call sa_sp_add_ledger(?, ?, ?, ?, ?)", v.id, currAc.Nominal().String(), tpe, currAc.Name(), prntNominal)
+	_, err := v.db.Exec("call sa_sp_add_ledger(?, ?, ?, ?, ?)", currAc.chartId, currAc.Nominal().String(), tpe, currAc.Name(), prntNominal)
 	if err != nil {
 		return err
 	}

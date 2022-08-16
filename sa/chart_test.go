@@ -48,7 +48,7 @@ func TestChart_GetParentId(t *testing.T) {
 func TestChart_SetRootNode(t *testing.T) {
 	setupChartTest()
 	newRootNode := tree.NewNode(
-		sa.NewAccount(sa.MustNewNominal("9999"), sa.NewAcType().Real(), "Root", 0, 0),
+		sa.NewAccount(sa.MustNewNominal("9999"), sa.NewAcType().Real(), "Root", 0, 0, sut.Id()),
 		nil,
 	)
 	sut.SetRootNode(newRootNode)
@@ -82,14 +82,14 @@ func TestChart_Tree(t *testing.T) {
 
 func setupChartTest() {
 	tr := tree.NewNode(
-		sa.NewAccount(sa.MustNewNominal("0000"), sa.NewAcType().Real(), "COA", 0, 0),
+		sa.NewAccount(sa.MustNewNominal("0000"), sa.NewAcType().Real(), "COA", 0, 0, sut.Id()),
 		&[]tree.NodeIFace{
 			tree.NewNode(
-				sa.NewAccount(sa.MustNewNominal("1000"), sa.NewAcType().Asset(), "Assets", 0, 0),
+				sa.NewAccount(sa.MustNewNominal("1000"), sa.NewAcType().Asset(), "Assets", 0, 0, sut.Id()),
 				nil,
 			),
 			tree.NewNode(
-				sa.NewAccount(sa.MustNewNominal("2000"), sa.NewAcType().Liability(), "Liability", 0, 0),
+				sa.NewAccount(sa.MustNewNominal("2000"), sa.NewAcType().Liability(), "Liability", 0, 0, sut.Id()),
 				nil,
 			),
 		},

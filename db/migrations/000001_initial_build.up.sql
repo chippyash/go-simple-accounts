@@ -179,7 +179,8 @@ BEGIN
         # Does the parent have any children?
         SELECT IFNULL((SELECT max(id)
                        FROM sa_coa_ledger
-                       WHERE prntId = vPrntId), 0)
+                       WHERE prntId = vPrntId
+                        AND chartId = chartInternalId), 0)
         INTO rightChildId;
 
         IF (rightChildId = 0)
@@ -188,15 +189,18 @@ BEGIN
             SELECT lft
             FROM sa_coa_ledger
             WHERE id = vPrntId
+              AND chartId = chartInternalId
             INTO myLeft;
 
             UPDATE sa_coa_ledger
             SET rgt = rgt + 2
-            WHERE rgt > myLeft;
+            WHERE rgt > myLeft
+              AND chartId = chartInternalId;
 
             UPDATE sa_coa_ledger
             SET lft = lft + 2
-            WHERE lft > myLeft;
+            WHERE lft > myLeft
+              AND chartId = chartInternalId;
 
             INSERT INTO sa_coa_ledger (`prntId`, `lft`, `rgt`, `chartId`, `nominal`, `type`, `name`)
             VALUES (vPrntId, myLeft + 1, myLeft + 2, chartInternalId, nominal, type, name);
@@ -205,15 +209,18 @@ BEGIN
             SELECT rgt
             FROM sa_coa_ledger
             WHERE id = rightChildId
+              AND chartId = chartInternalId
             INTO myRight;
 
             UPDATE sa_coa_ledger
             SET rgt = rgt + 2
-            WHERE rgt > myRight;
+            WHERE rgt > myRight
+              AND chartId = chartInternalId;
 
             UPDATE sa_coa_ledger
             SET lft = lft + 2
-            WHERE lft > myRight;
+            WHERE lft > myRight
+              AND chartId = chartInternalId;
 
             INSERT INTO sa_coa_ledger (`prntId`, `lft`, `rgt`, `chartId`, `nominal`, `type`, `name`)
             VALUES (vPrntId, myRight + 1, myRight + 2, chartInternalId, nominal, type, name);
@@ -310,7 +317,7 @@ END;
 CREATE
     DEFINER = CURRENT_USER PROCEDURE
     sa_sp_get_tree(
-    chartId INT(10) UNSIGNED
+    cId INT(10) UNSIGNED
 )
     READS SQL DATA
 BEGIN
@@ -320,9 +327,10 @@ BEGIN
            name,
            type,
            acDr,
-           acCr
+           acCr,
+           chartId
     FROM sa_coa_ledger
-    WHERE `chartId` = chartId
+    WHERE chartId = cId
     ORDER BY origid, destid;
 END;
 
@@ -333,12 +341,12 @@ CREATE DEFINER = CURRENT_USER TRIGGER sp_tr_jrn_entry_updt
 BEGIN
 
     # get the internal ledger id
-    SELECT l.id
+    SELECT l.id, l.chartId
     FROM sa_coa_ledger l
              LEFT JOIN sa_journal j ON j.chartId = l.chartId
     WHERE l.nominal = NEW.nominal
       AND j.id = NEW.jrnId
-    INTO @acId;
+    INTO @acId, @chartId;
 
     # create a concatenated string of parent ids as
     # creating temporary tables to hold parent ledger ids
@@ -349,6 +357,8 @@ BEGIN
          sa_coa_ledger AS parent
     WHERE node.lft BETWEEN parent.lft AND parent.rgt
       AND node.id = @acId
+      AND parent.chartId = @chartId
+      AND node.chartId = @chartId
     GROUP BY node.id
     INTO @parents;
 
@@ -362,33 +372,8 @@ BEGIN
             UPDATE sa_coa_ledger l
             SET l.acDr = l.acDr + NEW.acDr,
                 l.acCr = l.acCr + NEW.acCr
-            WHERE id = @prntId;
+            WHERE id = @prntId
+              AND chartId = @chartId;
             SET @numInArray = @numInArray - 1;
         END WHILE;
 END;
-
-# Application specific
-CREATE TABLE `org_coa`
-(
-    `orgId` int(10) unsigned not null comment 'organisation id',
-    `chartId` int(10) unsigned not null comment 'chart id',
-    `chartUse` enum('CivilRecovery') not null default 'CivilRecovery' comment 'what the chart is used for',
-    `crcy` enum('GBP','USD','EUR') not null default 'GBP' comment 'currency for chart',
-    UNIQUE (`orgId`, `chartId`, `chartUse`),
-    KEY `org_coa_chart_id_sa_coa` (`chartId`),
-    CONSTRAINT `org_coa_chart_id_sa_coa_fk` FOREIGN KEY (`chartId`) REFERENCES `sa_coa` (`id`) ON DELETE RESTRICT
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COMMENT ='Organisation to COA links';
-
-CREATE TABLE `org_cntrl`
-(
-    `chartId` int(10) unsigned not null comment 'chart id',
-    `mnemonic` varchar(6) not null comment 'mnemonic to use for retrieval',
-    `reason` varchar(30) comment 'reason for having the control account',
-    `nominal` varchar(10) not null comment 'the nominal account id',
-    UNIQUE (`chartId`, `mnemonic`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8 COMMENT ='Control account links to COA';
-
-
-
