@@ -163,13 +163,13 @@ func (a *AccountType) CrTitle() (string, error) {
 }
 
 //Balance returns the balance of two values dependent on the account type
-func (a *AccountType) Balance(drVal, crVal uint64) (uint64, error) {
+func (a *AccountType) Balance(drVal, crVal int64) (int64, error) {
 	if *a == dummy {
 		return 0, ErrDummyAccount
 	}
 	if *a == real {
 		//real balance - should always be zero as it is the root account
-		return uint64(math.Abs(float64(drVal) - float64(crVal))), nil
+		return int64(math.Abs(float64(drVal) - float64(crVal))), nil
 	}
 	if _, ok := titles[*a]; !ok {
 		return 0, ErrBalanceType

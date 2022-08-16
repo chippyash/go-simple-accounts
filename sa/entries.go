@@ -13,7 +13,7 @@ type Entries []*Entry
 
 //CheckBalance returns true if the set of entries balance else false
 func (e *Entries) CheckBalance() bool {
-	var balance uint64 = 0
+	var balance int64 = 0
 	drAc := *NewAcType().Dr()
 	for _, entry := range *e {
 		if *entry.Type()&drAc == drAc {

@@ -10,12 +10,12 @@ package sa
 
 type Entry struct {
 	entryId *Nominal
-	amount  uint64
+	amount  int64
 	tpe     *AccountType
 }
 
 //NewEntry constructor for Entry
-func NewEntry(entryId Nominal, amount uint64, tpe AccountType) *Entry {
+func NewEntry(entryId Nominal, amount int64, tpe AccountType) *Entry {
 	return &Entry{
 		entryId: &entryId,
 		amount:  amount,
@@ -34,6 +34,6 @@ func (e *Entry) Type() *AccountType {
 }
 
 //Amount returns the Entry Amount
-func (e *Entry) Amount() uint64 {
+func (e *Entry) Amount() int64 {
 	return e.amount
 }

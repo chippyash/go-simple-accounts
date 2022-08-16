@@ -25,7 +25,7 @@ func NewNodeFinder(nominal Nominal) *NodeFinder {
 	}
 }
 
-//Visit find the node. Returns *NodeInterface or nil
+//Visit visits each mode and returns a map of account balances
 func (v *NodeFinder) Visit(n tree.NodeIFace) interface{} {
 	if n.GetValue().(*Account).Nominal() == v.nom {
 		return n

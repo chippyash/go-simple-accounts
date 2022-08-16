@@ -68,11 +68,11 @@ func (s *SplitTransaction) GetEntry(nominal Nominal) (*Entry, error) {
 	return ret[0], nil
 }
 
-func (s *SplitTransaction) GetAmount() (uint64, error) {
+func (s *SplitTransaction) GetAmount() (int64, error) {
 	if !s.CheckBalance() {
 		return 0, ErrUnbalancedTransaction
 	}
-	var tot uint64 = 0
+	var tot int64 = 0
 	for _, entry := range s.entries {
 		tot += entry.Amount()
 	}

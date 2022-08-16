@@ -18,7 +18,7 @@ type SimpleTransactionBuilder struct {
 }
 
 //NewSimpleTransactionBuilder returns a SimpleTransactionBuilder
-func NewSimpleTransactionBuilder(id uint64, drAc, crAc Nominal, amount uint64) *SplitTransactionBuilder {
+func NewSimpleTransactionBuilder(id uint64, drAc, crAc Nominal, amount int64) *SplitTransactionBuilder {
 	ret := &SplitTransactionBuilder{txn: &SplitTransaction{
 		txnId:   id,
 		date:    time.Now(),

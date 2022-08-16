@@ -33,8 +33,8 @@ type ledger struct {
 	Nominal Nominal
 	Name    string
 	Tpe     string
-	AcDr    uint64
-	AcCr    uint64
+	AcDr    int64
+	AcCr    int64
 }
 type ledgerLines []ledger
 
@@ -323,14 +323,14 @@ func (a *Accountant) FetchTransaction(jrnId uint64) (*SplitTransaction, error) {
 	}
 	var id uint64
 	var nominal Nominal
-	var acDr, acCr uint64
+	var acDr, acCr int64
 	defer res2.Close()
 	for res.Next() {
 		err = res.Scan(&id, &nominal, &acDr, &acCr)
 		if err != nil {
 			return nil, err
 		}
-		var amount uint64
+		var amount int64
 		var acType *AccountType
 		if acDr == 0 {
 			amount = acCr
@@ -367,7 +367,8 @@ where e.nominal = ? and j.chartId = ?
 	if res.Err() != nil {
 		return nil, res.Err()
 	}
-	var id, ref, acDr, acCr uint64
+	var id, ref uint64
+	var acDr, acCr int64
 	var note, src string
 	var date time.Time
 	for res.Next() {
@@ -375,7 +376,7 @@ where e.nominal = ? and j.chartId = ?
 		if err != nil {
 			return nil, err
 		}
-		var amount uint64
+		var amount int64
 		var acType *AccountType
 		if acDr == 0 {
 			amount = acCr
