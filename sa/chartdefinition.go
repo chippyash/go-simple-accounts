@@ -22,7 +22,8 @@ var xsdSchema []byte
 
 //ChartDefinition is a helper to retrieve chart definition xml
 type ChartDefinition struct {
-	xmlFileName string
+	xmlFile string
+	isFile  bool
 }
 
 //NewChartDefinition constructor
@@ -31,7 +32,12 @@ func NewChartDefinition(xmlFileName string) (*ChartDefinition, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &ChartDefinition{xmlFileName: xmlFileName}, nil
+	return &ChartDefinition{xmlFile: xmlFileName, isFile: true}, nil
+}
+
+//NewChartDefinitionFromBytes constructor
+func NewChartDefinitionFromString(def string) *ChartDefinition {
+	return &ChartDefinition{xmlFile: def, isFile: false}
 }
 
 //GetDefinition returns parsed xml as Dom Document
@@ -41,11 +47,18 @@ func (c *ChartDefinition) GetDefinition() (*xmldom.Document, error) {
 	//	return nil, err
 	//}
 
-	doc, err := xmldom.ParseFile(c.xmlFileName)
+	if c.isFile {
+		doc, err := xmldom.ParseFile(c.xmlFile)
+		if err != nil {
+			return nil, err
+		}
+		return doc, nil
+	}
+
+	doc, err := xmldom.ParseXML(c.xmlFile)
 	if err != nil {
 		return nil, err
 	}
-
 	return doc, nil
 }
 
@@ -55,7 +68,7 @@ func (c *ChartDefinition) validate() (bool, error) {
 		return false, err
 	}
 
-	doc := golibxml.ParseFile(c.xmlFileName)
+	doc := golibxml.ParseFile(c.xmlFile)
 	if doc == nil {
 		return false, ErrBadXmlParse
 	}

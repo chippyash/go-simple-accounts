@@ -47,6 +47,12 @@ if err != nil {
 
 ```
 
+You can alternatively set the chart definition from a string:
+```go
+xml := `some xml string`
+def := sa.NewChartDefinitionFromString(xml)
+```
+
 #### Fetch an existing Chart
 ```go
 //You will have previously saved your chart id somewhere for later retrieval

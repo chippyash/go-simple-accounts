@@ -265,7 +265,7 @@ END;
 CREATE
     DEFINER = CURRENT_USER FUNCTION
     sa_fu_add_txn(
-    chartId INT(10) UNSIGNED,
+    cId INT(10) UNSIGNED,
     note TEXT,
     date DATETIME,
     src VARCHAR(6),
@@ -283,7 +283,7 @@ BEGIN
     SET date = IFNULL(date, CURRENT_TIMESTAMP);
 
     INSERT INTO sa_journal (`chartId`, `note`, `date`, `src`, `ref`)
-    VALUES (chartId, note, date, src, ref);
+    VALUES (cId, note, date, src, ref);
 
     SELECT last_insert_id()
     INTO jrnId;
