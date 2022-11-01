@@ -37,6 +37,24 @@ func TestAccountant_FetchChart(t *testing.T) {
 	teardownAccountantTest(t)
 }
 
+func TestAccountant_WriteTransactionWithUnbalancedTransactions(t *testing.T) {
+	setupAccountantTest(t)
+	def, _ := sa.NewChartDefinition("../tests/_data/personal.xml")
+	cId, err := accountant.CreateChart("Test2", "GBP", def)
+	assert.NoError(t, err)
+	dt, err := time.Parse(time.RFC3339, "2020-08-05T14:36:00+01:00")
+	assert.NoError(t, err)
+	at := sa.NewAcType()
+	entry := sa.NewEntry("0001", 100, *at.Dr())
+	txn := sa.NewSplitTransactionBuilder(cId).
+		WithEntries(sa.Entries{entry, entry}).
+		WithDate(dt).
+		Build()
+	jrnId, err := accountant.WriteTransactionWithDate(txn, dt)
+	assert.ErrorIs(t, err, sa.ErrUnbalancedTransaction)
+	teardownAccountantTest(t)
+}
+
 func TestAccountant_WriteTransactionWithDate(t *testing.T) {
 	setupAccountantTest(t)
 	def, _ := sa.NewChartDefinition("../tests/_data/personal.xml")

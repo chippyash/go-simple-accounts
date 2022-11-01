@@ -116,7 +116,7 @@ func (a *Accountant) storeChart(chart *Chart) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	if res.Err() != nil {
+	if res != nil {
 		return 0, res.Err()
 	}
 	var lastId int64 = 0
@@ -242,6 +242,11 @@ func (a *Accountant) WriteTransaction(txn *SplitTransaction) (uint64, error) {
 func (a *Accountant) WriteTransactionWithDate(txn *SplitTransaction, dt time.Time) (uint64, error) {
 	if a.chartId == 0 {
 		return 0, ErrNoChartId
+	}
+
+	//validate transaction balance
+	if !txn.CheckBalance() {
+		return 0, ErrUnbalancedTransaction
 	}
 
 	stmt, err := a.db.Prepare("select sa_fu_add_txn(?, ?, ?, ?, ?, ?, ?, ?) as txnId")

@@ -1,7 +1,11 @@
 github.com/antchfx/xpath v0.0.0-20170515025933-1f3266e77307 h1:C735MoY/X+UOx6SECmHk5pVOj51h839Ph13pEoY8UmU=
 github.com/antchfx/xpath v0.0.0-20170515025933-1f3266e77307/go.mod h1:Yee4kTMuNiPYJ7nSNorELQMr1J33uOpXDMByNYhvtNk=
+github.com/antchfx/xpath v1.2.1 h1:qhp4EW6aCOVr5XIkT+l6LJ9ck/JsUH/yyauNgTQkBF8=
+github.com/antchfx/xpath v1.2.1/go.mod h1:i54GszH55fYfBmoZXapTHN8T8tkcHfRgLyVwwqzXNcs=
 github.com/chippyash/go-hierarchy-tree v0.0.1 h1:kVrANxM+vK2pJBwehk+0lfdadpo7HqPNbZOXfH46Up8=
 github.com/chippyash/go-hierarchy-tree v0.0.1/go.mod h1:bkCJ0virMNV6h8ZCRdnyzsjJbpbDDcLSo5GArsWl+R4=
+github.com/chippyash/go-hierarchy-tree v0.0.2 h1:6kmIQKVg/qtlHjLfXV16lS9QmnGHiRPzhkpAmIH44Dk=
+github.com/chippyash/go-hierarchy-tree v0.0.2/go.mod h1:bkCJ0virMNV6h8ZCRdnyzsjJbpbDDcLSo5GArsWl+R4=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
