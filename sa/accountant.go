@@ -116,7 +116,7 @@ func (a *Accountant) storeChart(chart *Chart) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	if res != nil {
+	if res.Err() != nil {
 		return 0, res.Err()
 	}
 	var lastId int64 = 0

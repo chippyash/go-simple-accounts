@@ -50,7 +50,7 @@ func TestAccountant_WriteTransactionWithUnbalancedTransactions(t *testing.T) {
 		WithEntries(sa.Entries{entry, entry}).
 		WithDate(dt).
 		Build()
-	jrnId, err := accountant.WriteTransactionWithDate(txn, dt)
+	_, err = accountant.WriteTransactionWithDate(txn, dt)
 	assert.ErrorIs(t, err, sa.ErrUnbalancedTransaction)
 	teardownAccountantTest(t)
 }
